@@ -18,9 +18,9 @@ app.set('view engine', 'ejs');
 app.set('views', 'views');
 
  const adminRoutes = require('./routes/admin');
-/*const shopRoutes = require('./routes/shop');
-const userRoutes =require('./routes/user');
-const expenseroutes=require('./routes/expense'); */
+const shopRoutes = require('./routes/shop');
+// const userRoutes =require('./routes/user');
+// const expenseroutes=require('./routes/expense'); 
 
 var cors=require('cors');
 const { JSON } = require('sequelize');
@@ -48,7 +48,7 @@ app.use((req,res,next)=>{
 
 
  app.use('/admin', adminRoutes);
-//app.use(shopRoutes);
+ app.use(shopRoutes);
 
 app.use(errorController.get404);
 
