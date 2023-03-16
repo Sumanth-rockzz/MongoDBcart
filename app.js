@@ -9,7 +9,7 @@ const errorController = require('./controllers/error');
 
 const mongoConnect=require('./util/database').mongoConnect;
 
-
+const Puser=require('./models/puser');
 
 
 const app = express();
@@ -37,13 +37,12 @@ app.use('/user',userRoutes); */
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req,res,next)=>{
-   /*  Puser.findByPk(1)
+    Puser.findById('64121bcce57b167647a8751f')
     .then(user=>{
-        req.user=user;
+        req.user=new Puser(user.name,user.email,user.cart,user._id)
         next();
     })
-    .catch(err=>console.log(err)); */
-    next();
+    .catch(err=>console.log(err));
 })
 
 
