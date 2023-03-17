@@ -1,59 +1,55 @@
 const path = require('path');
 
 const express = require('express');
-
 const bodyParser = require('body-parser');
 
-
 const errorController = require('./controllers/error');
-
-const mongoConnect=require('./util/database').mongoConnect;
-
-const Puser=require('./models/puser');
-
+ const User = require('./models/puser');
+const mongoose=require('mongoose');
 
 const app = express();
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
- const adminRoutes = require('./routes/admin');
+const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
-// const userRoutes =require('./routes/user');
-// const expenseroutes=require('./routes/expense'); 
 
-var cors=require('cors');
-const { JSON } = require('sequelize');
-
-app.use(cors());
-//app.use(bodyParser.json({ extended: false }));//for expense tracker
-
-app.use(bodyParser.urlencoded({ extended: false }));// e-cart 
-/* app.use('/expense',expenseroutes)
-
-
-app.use('/user',userRoutes); */
-
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use((req,res,next)=>{
-    Puser.findById('64121bcce57b167647a8751f')
-    .then(user=>{
-        req.user=new Puser(user.name,user.email,user.cart,user._id)
-        next();
+ app.use((req, res, next) => {
+  User.findById('641456d9d43f57d12c185709')
+    .then(user => {
+      req.user = user;
+      next();
     })
-    .catch(err=>console.log(err));
-})
+    .catch(err => console.log(err));
+});
 
-
- app.use('/admin', adminRoutes);
- app.use(shopRoutes);
+app.use('/admin', adminRoutes);
+app.use(shopRoutes);
 
 app.use(errorController.get404);
 
-
-mongoConnect(()=>{
+mongoose
+.connect('mongodb+srv://sumanth:Sumanth27102001@cluster0.ssmcy1t.mongodb.net/shop?retryWrites=true&w=majority')
+.then((result)=>{
+  console.log("Connected!");
+  User.findOne().then(user=>{
+    if(!user){
+      const user=new User({
+        name:"Sumanth",
+        email:"Sumanthn876@gmail.com",
+        cart:{
+          items:[]
+        }
+      })
+        user.save();
+    }
+  })
     app.listen(3000);
 })
-
-
+.catch((err)=>{
+  console.log(err);
+})
